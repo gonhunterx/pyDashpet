@@ -1,34 +1,30 @@
 from tkinter import *
 import ttkbootstrap as tb
+from foods import bad_foods, good_foods
 
 root = tb.Window(themename="vapor")
 root.title("dashpet food safety calculator!")
 root.geometry("500x350")
 
 # label
-my_label = tb.Label(text="Dashpet", font=("Roboto", 28), bootstyle="danger")
+my_label = tb.Label(text="Dashpet", font=("Roboto", 28), bootstyle="secondary")
 my_label.pack(pady=20)
-
-negative_dog_foods = ["grapes"]
-negative_cat_foods = ["grapes"]
 
 
 # FUNCTIONS
 def compile_results():
     # Get the selected pet and entered food
     selected_pet = clicked.get()
-    entered_food = (
-        food_entry.get().lower()
-    )  # Convert to lowercase for case-insensitive comparison
+    entered_food = food_entry.get().lower()
 
-    # Check if the entered food is in the list of negative foods for the selected pet
-    if selected_pet == "Dog" and entered_food in negative_dog_foods:
-        result_label.config(text="This food is bad for dogs!", bootstyle="danger")
-    elif selected_pet == "Cat" and entered_food in negative_cat_foods:
-        result_label.config(text="This food is bad for cats!", bootstyle="danger")
+    # Check if the entered food is in the dictionary of bad foods for the selected pet
+    if selected_pet in bad_foods and entered_food in bad_foods[selected_pet]:
+        result_label.config(
+            text=f"This food is bad for {selected_pet}s!", bootstyle="danger"
+        )
     else:
         result_label.config(
-            text="This food is safe for the selected pet.", bootstyle="success"
+            text=f"This food is safe for {selected_pet}s.", bootstyle="success"
         )
 
 
