@@ -1,3 +1,11 @@
+# need to get the food API library to compare against.
+# this will allow for me to check to see if what was entered was even a real food.
+# if not then we can tell them that what was entered was not a food and that we can then
+# default for them to just re-enter another food.
+# this will allow for us to not even need a good food list.
+# defering allows us to not worry as much about the contents of the database.
+
+from edamem_api import check_food
 from tkinter import *
 import ttkbootstrap as tb
 from foods import bad_foods, good_foods
@@ -13,18 +21,31 @@ my_label.pack(pady=20)
 
 # FUNCTIONS
 def compile_results():
-    # Get the selected pet and entered food
     selected_pet = clicked.get()
     entered_food = food_entry.get().lower()
 
-    # Check if the entered food is in the dictionary of bad foods for the selected pet
-    if selected_pet in bad_foods and entered_food in bad_foods[selected_pet]:
+    app_id = "b48e160d"
+    app_key = "411b578a05b06957191e6ab0f463c9f1	"
+
+    is_recognized, food_data = check_food(entered_food, app_id, app_key)
+
+    if is_recognized:
+        # Check if the entered food is in the bad foods list
+        if selected_pet in bad_foods and entered_food in bad_foods[selected_pet]:
+            result_label.config(
+                text=f"This food is bad for {selected_pet}s!", bootstyle="danger"
+            )
+        else:
+            result_label.config(
+                text=f"This food is safe for {selected_pet}s.", bootstyle="success"
+            )
+    elif is_recognized is False:
         result_label.config(
-            text=f"This food is bad for {selected_pet}s!", bootstyle="danger"
+            text=f"{entered_food} is not a recognized food.", bootstyle="danger"
         )
     else:
         result_label.config(
-            text=f"This food is safe for {selected_pet}s.", bootstyle="success"
+            text="Error connecting to the Edamam API.", bootstyle="danger"
         )
 
 
